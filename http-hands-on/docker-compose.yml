@@ -1,0 +1,19 @@
+services:
+  httpbin:
+    image: ghcr.io/mccutchen/go-httpbin
+    networks: [internal]
+
+  proxy:
+    build: ./proxy
+    ports:
+      - "80:80"
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      UPSTREAM: http://httpbin:8080
+    networks: [edge, internal]
+    depends_on: [httpbin]
+
+networks:
+  edge:
+  internal:
+    internal: true
